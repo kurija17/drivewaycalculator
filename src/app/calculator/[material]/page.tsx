@@ -17,22 +17,6 @@ interface MaterialPageProps {
   };
 }
 
-'use client';
-
-interface MaterialPageProps {
-  params: {
-    material: string;
-  };
-}
-
-'use client';
-
-interface MaterialPageProps {
-  params: {
-    material: string;
-  };
-}
-
 export default function MaterialPage({ params }: MaterialPageProps) {
   const material = params.material as keyof typeof materials
 
