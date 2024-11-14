@@ -1,151 +1,15 @@
 'use client'
 
-import { useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Calculator, Info } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
+import { Card } from "@/components/ui/card"
 
 const materials = {
   asphalt: { name: 'Asphalt', unit: 'ton', pricePerUnit: 100 },
   concrete: { name: 'Concrete', unit: 'cubic yard', pricePerUnit: 150 },
   gravel: { name: 'Gravel', unit: 'cubic yard', pricePerUnit: 50 },
   pavers: { name: 'Pavers', unit: 'square foot', pricePerUnit: 5 },
-}
-
-function calculateMaterials(length: number, width: number, depth: number, material: keyof typeof materials) {
-  const area = length * width
-  const volume = area * (depth / 12) // Convert depth to feet
-  let quantity: number
-
-  switch (material) {
-    case 'asphalt':
-      quantity = volume * 2 // Asphalt weighs about 2 tons per cubic yard
-      break
-    case 'concrete':
-    case 'gravel':
-      quantity = volume / 27 // Convert cubic feet to cubic yards
-      break
-    case 'pavers':
-      quantity = area // Pavers are sold by square foot
-      break
-    default:
-      quantity = 0
-  }
-
-  const cost = quantity * materials[material].pricePerUnit
-
-  return { quantity: Math.ceil(quantity), cost: Math.ceil(cost) }
-}
-
-function CalculatorForm({ material }: { material: keyof typeof materials }) {
-  const [length, setLength] = useState('')
-  const [width, setWidth] = useState('')
-  const [depth, setDepth] = useState('')
-  const [result, setResult] = useState<{ quantity: number; cost: number } | null>(null)
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const calc = calculateMaterials(Number(length), Number(width), Number(depth), material)
-    setResult(calc)
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="space-y-2">
-          <Label htmlFor={`${material}-length`} className="text-base sm:text-lg md:text-xl font-medium tracking-tight">
-            Length (feet)
-          </Label>
-          <Input
-            id={`${material}-length`}
-            type="number"
-            min="0"
-            step="0.1"
-            required
-            value={length}
-            onChange={(e) => setLength(e.target.value)}
-            className="h-12 md:h-14 px-4 text-base sm:text-lg md:text-xl bg-[#f6f6f7] text-[#1a2039] border-[#b0a36e]"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor={`${material}-width`} className="text-base sm:text-lg md:text-xl font-medium tracking-tight">
-            Width (feet)
-          </Label>
-          <Input
-            id={`${material}-width`}
-            type="number"
-            min="0"
-            step="0.1"
-            required
-            value={width}
-            onChange={(e) => setWidth(e.target.value)}
-            className="h-12 md:h-14 px-4 text-base sm:text-lg md:text-xl bg-[#f6f6f7] text-[#1a2039] border-[#b0a36e]"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor={`${material}-depth`} className="text-base sm:text-lg md:text-xl font-medium tracking-tight">
-            Depth (inches)
-          </Label>
-          <Input
-            id={`${material}-depth`}
-            type="number"
-            min="0"
-            step="0.1"
-            required
-            value={depth}
-            onChange={(e) => setDepth(e.target.value)}
-            className="h-12 md:h-14 px-4 text-base sm:text-lg md:text-xl bg-[#f6f6f7] text-[#1a2039] border-[#b0a36e]"
-          />
-        </div>
-      </div>
-      <Button 
-        type="submit" 
-        className="w-full bg-[#b0a36e] text-[#1a2039] hover:bg-[#1a2039] hover:text-[#f6f6f7] text-base sm:text-lg font-medium tracking-tight"
-      >
-        Calculate
-      </Button>
-      {result && (
-        <div className="mt-6 p-6 bg-[#f6f6f7] rounded-md text-[#1a2039] border border-[#b0a36e]">
-          <p className="text-lg sm:text-xl md:text-2xl font-semibold tracking-tight mb-2">
-            Estimated Materials:
-          </p>
-          <p className="text-base sm:text-lg mb-4">{result.quantity} {materials[material].unit}s of {materials[material].name}</p>
-          <p className="text-lg sm:text-xl md:text-2xl font-semibold tracking-tight mb-2">
-            Estimated Cost:
-          </p>
-          <p className="text-base sm:text-lg">${result.cost.toLocaleString()}</p>
-        </div>
-      )}
-    </form>
-  )
-}
-
-function MaterialInfo({ material }: { material: keyof typeof materials }) {
-  const info = {
-    asphalt: "Asphalt is durable and cost-effective. It's ideal for larger driveways and can last up to 20 years with proper maintenance.",
-    concrete: "Concrete is long-lasting and low-maintenance. It's versatile in terms of finish and color options, and can last 30+ years.",
-    gravel: "Gravel is affordable and easy to install. It provides good drainage but requires regular maintenance to keep it level and weed-free.",
-    pavers: "Pavers offer a wide variety of design options. They're durable, easy to repair, and can last 30-40 years with proper installation and care."
-  }
-
-  return (
-    <Card className="mt-6 bg-white text-[#1a2039] border-[#b0a36e]">
-      <CardHeader>
-        <CardTitle className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight">
-          About {materials[material].name}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-base sm:text-lg leading-relaxed">
-          {info[material]}
-        </p>
-      </CardContent>
-    </Card>
-  )
 }
 
 export default function Home() {
@@ -190,45 +54,29 @@ export default function Home() {
         <section className="w-full px-4 py-16 sm:py-20 md:py-28 lg:py-32 bg-[#f6f6f7] flex items-center justify-center">
           <div className="container flex flex-col items-center justify-center">
             <div className="w-full max-w-[90%] sm:max-w-[80%] md:max-w-[700px] lg:max-w-[900px]">
-              <Tabs defaultValue="asphalt">
-                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 bg-[#1a2039] h-12 md:h-14 p-1.5 rounded-lg">
-                  {Object.keys(materials).map((material) => (
-                    <TabsTrigger 
-                      key={material} 
-                      value={material}
-                      className="text-sm sm:text-base md:text-lg font-medium text-[#f6f6f7] data-[state=active]:bg-[#b0a36e] data-[state=active]:text-[#1a2039] tracking-tight h-full rounded-md"
-                    >
-                      {materials[material as keyof typeof materials].name}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-                
-                {Object.keys(materials).map((material) => (
-                  <TabsContent key={material} value={material}>
-                    <Card className="bg-white text-[#1a2039] border-[#b0a36e] shadow-sm">
-                      <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {Object.entries(materials).map(([key, material]) => (
+                  <Link href={`/calculator/${key}`} key={key}>
+                    <Card className="group bg-white text-[#1a2039] border-[#b0a36e] shadow-sm hover:shadow-md transition-all">
+                      <div className="relative w-full h-[200px] sm:h-[250px]">
                         <Image
-                          src={`/images/${material}.jpg`}
-                          alt={`${materials[material as keyof typeof materials].name} driveway`}
+                          src={`/images/${key}.jpg`}
+                          alt={`${material.name} driveway`}
                           fill
-                          className="object-cover rounded-t-lg"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1000px"
+                          className="object-cover rounded-t-lg group-hover:scale-105 transition-transform duration-300"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
                           priority
                         />
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
-                          <h3 className="text-white text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
-                            {materials[material as keyof typeof materials].name} Driveway
+                          <h3 className="text-white text-xl sm:text-2xl font-bold tracking-tight">
+                            {material.name} Calculator
                           </h3>
                         </div>
                       </div>
-                      <CardContent className="p-6 md:p-8">
-                        <CalculatorForm material={material as keyof typeof materials} />
-                      </CardContent>
                     </Card>
-                    <MaterialInfo material={material as keyof typeof materials} />
-                  </TabsContent>
+                  </Link>
                 ))}
-              </Tabs>
+              </div>
             </div>
           </div>
         </section>
