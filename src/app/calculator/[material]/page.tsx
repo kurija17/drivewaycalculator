@@ -11,7 +11,13 @@ import Link from 'next/link'
 import { materials, calculateMaterials } from '@/lib/calculator'
 import { notFound } from 'next/navigation'
 
-export default function CalculatorPage({ params }: { params: { material: string } }) {
+interface MaterialPageProps {
+  params: {
+    material: string;
+  };
+}
+
+export default async function MaterialPage({ params }: MaterialPageProps) {
   const material = params.material as keyof typeof materials
 
   if (!materials[material]) {
