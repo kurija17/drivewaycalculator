@@ -33,17 +33,22 @@ export const materials = {
   }
 };
 
-type CalculationResult = {
-  quantity: number;
-  cost: number;
-} | null;
-
 export function calculateMaterials(
   length: number,
   width: number,
   depth: number,
   material: keyof typeof materials
-): { quantity: number; cost: number; installationCost: number; totalCost: number; details?: any } | null {
+): { 
+  quantity: number; 
+  cost: number; 
+  installationCost: number; 
+  totalCost: number; 
+  details?: {    // Replace any with an object type
+    area: number;
+    depth: number;
+    volume: number;
+  }
+} | null {
   if (!length || !width || !depth) return null;
   
   const area = length * width; // square feet
