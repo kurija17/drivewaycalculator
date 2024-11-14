@@ -5,17 +5,20 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { calculateGravel, materials } from '@/lib/calculator'
+import { calculateGravel } from '@/lib/calculator'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Calculator } from 'lucide-react'
+
+interface CalculationResult {
+  area: number;
+  volumeCubicYards: number;
+  tons: number;
+  materialCost: number;
+  pricePerUnit: number;
+  pricePerSquareFoot: number;
+  totalCost: number;
+}
 
 export default function GravelCalculator() {
   const [dimensions, setDimensions] = useState({
@@ -24,7 +27,7 @@ export default function GravelCalculator() {
     depth: '',
   });
   const [customPrice, setCustomPrice] = useState<string>('');
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<CalculationResult | null>(null);
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
