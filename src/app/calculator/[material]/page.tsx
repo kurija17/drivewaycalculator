@@ -11,13 +11,12 @@ import Link from 'next/link'
 import { materials, calculateMaterials } from '@/lib/calculator'
 import { notFound } from 'next/navigation'
 
-interface MaterialPageProps {
-  params: {
-    material: string;
-  };
-}
-
-export default function MaterialPage({ params }: MaterialPageProps) {
+export default function MaterialPage({ 
+  params,
+}: {
+  params: { material: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
   const material = params.material as keyof typeof materials
 
   if (!materials[material]) {
